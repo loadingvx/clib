@@ -54,7 +54,7 @@ template <class Kty,class Vty>
 class static_hash_map
 {
 	public:
-		bool load_serialized_hash_file(const char* file);
+		bool load(const char* file);
 		Vty * operator[](const Kty& k);
 		inline unsigned int size() {
 			return m_size;
@@ -82,7 +82,7 @@ class static_hash_map
 
 
 	template<class Kty, class Vty, class C>
-bool container_to_hash_file(C& dynamic_container, unsigned int bucket_pow,
+bool serialize(C& dynamic_container, unsigned int bucket_pow,
 		const char* file)
 {
 	if (bucket_pow < 10) {
@@ -180,6 +180,7 @@ bool container_to_hash_file(C& dynamic_container, unsigned int bucket_pow,
 
 	FILE* fp = fopen(file, "wb");
 	if (!fp || fwrite(ptr_table, 1, total_len, fp) != total_len) {
+		perror(file);
 		delete ptr_table;
 		delete p_hasher;
 		delete p_tmp_hasher;
@@ -195,10 +196,11 @@ bool container_to_hash_file(C& dynamic_container, unsigned int bucket_pow,
 
 
 	template <class Kty, class Vty>
-bool static_hash_map<Kty, Vty>::load_serialized_hash_file(const char* file)
+bool static_hash_map<Kty, Vty>::load(const char* file)
 {
 	FILE* fp = fopen(file, "rb");
 	if (!fp) {
+		perror(file);
 		return false;
 	}
 
