@@ -31,6 +31,8 @@
 void log_init(const char* _filename, int options);
 void logger_impl(int level, const char* file, int line, const char* fmt, ...);
 
+
+#ifdef DEBUG
 #define info(fmt, ...)   {  \
 	logger_impl(LOG_INFO,  __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
 }
@@ -39,19 +41,10 @@ void logger_impl(int level, const char* file, int line, const char* fmt, ...);
 	logger_impl(LOG_WARN,  __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
 }
 
-#define error(fmt, ...)   {  \
-	logger_impl(LOG_ERROR,  __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
-}
-
-#define fatal(fmt, ...)   {  \
-	logger_impl(LOG_FATAL,  __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
-}
 
 #define notice(fmt, ...)   {  \
 	logger_impl(LOG_NOTICE,  __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
 }
-
-#ifdef DEBUG
 /* enable debug and checking if DEBUG if defined */
 #define debug(fmt, ...)   {  \
 	logger_impl(LOG_NOTICE,  __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
@@ -67,13 +60,23 @@ void print_and_abort(const char* file, int line, const char* expr);
 #define check(condition) require(condition)
 
 #else
-/* erase all debug and checking in release */
+/* erase all debug/check/info/notice/warn from release */
+#define info(...)
+#define notice(...)
+#define warn(...)
 #define debug(...)
 #define require(...)
 #define check(...)
-
 #endif
 
+
+#define error(fmt, ...)   {  \
+	logger_impl(LOG_ERROR,  __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
+}
+
+#define fatal(fmt, ...)   {  \
+	logger_impl(LOG_FATAL,  __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
+}
 
 
 

@@ -11,6 +11,8 @@
 #define ERRMSG_COLOR    "\033[33m"
 #define END_COLOR       "\033[0m"
 
+#define CHECK_FLAG(options, opt) (options&opt)
+
 char* LEVEL[] = { "INFO", "WARN", "EROR" };
 
 void print_and_abort(const char* file, int line, const char* expr) {
@@ -34,6 +36,7 @@ void log_init(const char* _filename, int options) {
 	memset(&(setting.options), options, 1);
 	memset(setting.filename, 0, 127);
 	snprintf(setting.filename, 127, "%s", _filename);
+	check(setting.options==options);
 }
 
 void get_prefix(char* prefix, int len, const char* file, int line) {
@@ -48,20 +51,30 @@ void get_prefix(char* prefix, int len, const char* file, int line) {
 void logger_impl(int level, const char* file, int line, const char* fmt, ...) {
 	char prefix[128];
 	get_prefix(prefix, 128, file, line);
+
 	FILE *f = fopen(setting.filename, "a+");
 	if (f==NULL) {
 		perror(setting.filename);
 		return;
 	}
-	fprintf(f, "%s", prefix);
+
+
 	va_list vars;
 	va_start(vars, fmt);
-	vfprintf(f, fmt, vars);
-	va_end(vars);
-	fclose(f);
+	char* buf = (char*)calloc(1, sizeof(char)*4096);
 
-	//if (stdout) {
-	//}
+	int used = sprintf(buf, "%s", prefix);
+	vsprintf(buf+used, fmt, vars);
+	va_end(vars);
+
+	fprintf(f, "%s", buf);
+
+	if (CHECK_FLAG(setting.options, LOG_ENABLE_CONSOLE)) {
+		fprintf(stderr, "%s", buf);
+	}
+
+	free(buf);
+	fclose(f);
 	
 }
 
