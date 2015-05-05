@@ -23,9 +23,54 @@ volatile int __lock = CAS_VALID;
 #define cas_try  __sync_bool_compare_and_swap(&__lock, CAS_VALID, CAS_OCCUPY)
 #define cas_free __sync_bool_compare_and_swap(&__lock, CAS_OCCUPY, CAS_VALID)
 
+struct log_setting {
+	char filename[128];
+	int  level;
+	int  options;
+	int  hour;
+	int  min;
+	int  day;
+	int  cnt;
+} setting;
 
 char* LEVEL[] = { "INFO", "WARN", "EROR" };
 
+void log_daily_rotate(int _hour, int _min) {
+	if(_hour < 0 || _hour >= 24 || _min < 0 || _min >= 60) {
+		fprintf(stderr, "Invalid Time %d:%d\n", _hour, _min);
+		return;
+	}
+	setting.hour = _hour;
+	setting.min  = _min;
+}
+
+
+inline void _now(char* buf, int len, const char* fmt) {
+	time_t t=time(NULL);
+	strftime (buf, len, fmt, localtime(&t));
+}
+
+int logrotate() {
+	time_t _t =time(NULL);
+	struct tm* t = localtime(&_t);
+	if ( setting.day != t->tm_mday &&
+		t->tm_min >= setting.min && t->tm_hour >= setting.hour) {
+		while(!cas_try);  /* enter critical */
+		char * newName = (char*)malloc(sizeof(char)*256);
+		memset(newName, 0, 256);
+		snprintf(newName, 255, "%s.%d-%d-%d.%d.%d", setting.filename,
+			 t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
+			 t->tm_hour, t->tm_min);
+		if(rename(setting.filename, newName)) {
+			perror(newName);
+			return -1;
+		}
+		free(newName);
+		setting.day = t->tm_mday;
+		while(!cas_free); /* leave critical */
+	}
+	return 0;
+}
 
 void print_and_abort(const char* file, int line, const char* expr) {
 	if(! isatty(fileno(stderr))) {
@@ -37,25 +82,20 @@ void print_and_abort(const char* file, int line, const char* expr) {
 }
 
 
-struct log_setting {
-	char filename[128];
-	int  level;
-	int  options;
-} setting;
-
-
 void log_init(const char* _filename, int options) {
 	memset(&(setting.options), options, 1);
 	memset(setting.filename, 0, 127);
 	snprintf(setting.filename, 127, "%s", _filename);
 	check(setting.options==options);
+	setting.day  = -1;
+	setting.min  = -1;
+	setting.hour = -1;
 }
 
 void get_prefix(char* prefix, int len, const char* file, int line) {
 	memset(prefix, 0x0, len);
 	char now[20];
-	time_t t=time(NULL);
-	strftime (now, 20, "%Y-%m-%d %H:%M:%S", localtime(&t));
+	_now(now, 19, "%Y-%m-%d %H:%M:%S");
 	snprintf(prefix, len-1, "[%s] INFO [%s +%d] ", now, file, line);
 }
 
@@ -64,29 +104,31 @@ void logger_impl(int level, const char* file, int line, const char* fmt, ...) {
 	char prefix[128];
 	get_prefix(prefix, 128, file, line);
 
+	va_list vars;
+	va_start(vars, fmt);
+	char* buf = (char*)calloc(1, sizeof(char)*4096);
+
+	if (CHECK_FLAG(setting.options, LOG_DAILY_ROTATE) && setting.cnt%20000 == 0) {
+		logrotate();
+	}
+
+	while(!cas_try); /* enter critical */
+
 	FILE *f = fopen(setting.filename, "a+");
 	if (f==NULL) {
 		perror(setting.filename);
 		return;
 	}
-
-
-	va_list vars;
-	va_start(vars, fmt);
-	char* buf = (char*)calloc(1, sizeof(char)*4096);
-
-	while(!cas_try); /* enter critical */
-
 	int used = sprintf(buf, "%s", prefix);
 	vsprintf(buf+used, fmt, vars);
 	va_end(vars);
 
 	fprintf(f, "%s", buf);
-	fflush(f);
 
-	if (CHECK_FLAG(setting.options, LOG_ENABLE_CONSOLE)) {
+	if (CHECK_FLAG(setting.options, LOG_CONSOLE)) {
 		fprintf(stderr, "%s", buf);
 	}
+	setting.cnt += 1;
 
 	while(!cas_free); /* leave critical */
 

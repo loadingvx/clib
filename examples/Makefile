@@ -10,6 +10,7 @@ testLog:
 clean:
 	rm -rf testHashMap
 	rm -rf testLog
+	rm -rf *.log
 
 
 

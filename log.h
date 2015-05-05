@@ -13,12 +13,12 @@
 #include<stdarg.h>
 
 /* log behavior */
-#define LOG_ENABLE_SYSLOG   0x01
-#define LOG_ENABLE_CONSOLE  0x02
-#define LOG_ENABLE_ROTATE   0x04
-#define LOG_ENABLE_LOCATION 0x08
-#define LOG_PREFIX_PID      0x10
-#define LOG_PREFIX_UID      0x20
+#define LOG_SYSLOG        0x01
+#define LOG_CONSOLE       0x02
+#define LOG_DAILY_ROTATE  0x04
+#define LOG_PREFIX_SRC    0x08
+#define LOG_PREFIX_PID    0x10
+#define LOG_PREFIX_UID    0x20
 
 
 /* logging levels */
@@ -29,6 +29,7 @@
 #define LOG_FATAL    LOG_ERROR
 
 void log_init(const char* _filename, int options);
+void log_daily_rotate(int _hour, int _min);
 void logger_impl(int level, const char* file, int line, const char* fmt, ...);
 
 

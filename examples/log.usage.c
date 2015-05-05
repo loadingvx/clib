@@ -29,7 +29,8 @@ void test_multi_thread(int thread_num, void (*p)(void) ) {
 
 int main(int argc, const char *argv[])
 {
-	log_init("./debug.log", 0);
+	log_init("./debug.log", LOG_DAILY_ROTATE|LOG_CONSOLE);
+	log_daily_rotate(0, atoi(argv[1]));
 
 	test_multi_thread(20, writelog);
 
