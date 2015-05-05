@@ -13,19 +13,19 @@
 #include<stdarg.h>
 
 /* log behavior */
-#define LOG_CONSOLE       0x01
-#define LOG_DAILY_ROTATE  0x02
+#define LOG_CONSOLE        0x01
+#define LOG_DAILY_ROTATE   0x02
 
 
 /* logging levels */
 #define LOG_INFO     0x01
 #define LOG_NOTICE   0x02
-#define LOG_WARN     LOG_NOTICE
-#define LOG_ERROR    0x04
-#define LOG_FATAL    LOG_ERROR
+#define LOG_WARN     0x04
+#define LOG_ERROR    0x08
+#define LOG_FATAL    0x10
 
 void log_init(const char* _filename, int options);
-void log_daily_rotate(int _hour, int _min);
+void log_daily_rotate(int _hour, int _min, int _reqs_precheck);
 void logger_impl(int level, const char* file, int line, const char* fmt, ...);
 
 

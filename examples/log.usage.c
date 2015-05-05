@@ -8,6 +8,8 @@ void writelog(){
 	int thread = (int)pthread_self();
 	for(int i = 0; i < TIMES; i++) {
 		info("thread_id=%d\n", thread);
+		notice("thread_id=%d\n", thread);
+		warn("thread_id=%d\n", thread);
 	}
 }
 
@@ -29,8 +31,8 @@ void test_multi_thread(int thread_num, void (*p)(void) ) {
 
 int main(int argc, const char *argv[])
 {
-	log_init("./debug.log", LOG_DAILY_ROTATE|LOG_CONSOLE);
-	log_daily_rotate(0, atoi(argv[1]));
+	log_init("./debug.log", LOG_DAILY_ROTATE);
+	log_daily_rotate(0, atoi(argv[1]), 10000);
 
 	test_multi_thread(20, writelog);
 

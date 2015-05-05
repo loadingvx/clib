@@ -31,17 +31,19 @@ struct log_setting {
 	int  min;
 	int  day;
 	int  cnt;
+	int  preck;
 } setting;
 
-char* LEVEL[] = { "INFO", "WARN", "EROR" };
+const char* LEVEL[] = { "INFO", "NOTICE", "WARN", "EROR", "FATAL" };
 
-void log_daily_rotate(int _hour, int _min) {
+void log_daily_rotate(int _hour, int _min, int _reqs_precheck) {
 	if(_hour < 0 || _hour >= 24 || _min < 0 || _min >= 60) {
 		fprintf(stderr, "Invalid Time %d:%d\n", _hour, _min);
 		return;
 	}
-	setting.hour = _hour;
-	setting.min  = _min;
+	setting.hour  = _hour;
+	setting.min   = _min;
+	setting.preck = _reqs_precheck;
 }
 
 
@@ -62,6 +64,7 @@ int logrotate() {
 			 t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
 			 t->tm_hour, t->tm_min);
 		if(rename(setting.filename, newName)) {
+			printf("checking[%d]\n", t->tm_min);
 			perror(newName);
 			return -1;
 		}
@@ -92,29 +95,45 @@ void log_init(const char* _filename, int options) {
 	setting.hour = -1;
 }
 
-void get_prefix(char* prefix, int len, const char* file, int line) {
+inline const char* getpromote(int level) {
+	switch(level) {
+	case LOG_INFO:
+		return LEVEL[0];
+	case LOG_NOTICE:
+		return LEVEL[1];
+	case LOG_WARN:
+		return LEVEL[2];
+	case LOG_ERROR:
+		return LEVEL[3];
+	case LOG_FATAL:
+		return LEVEL[4];
+	}
+	return NULL; /* should not be here */
+}
+
+inline void get_prefix(char* prefix, int len, const char* file, int line, int level) {
 	memset(prefix, 0x0, len);
 	char now[20];
 	_now(now, 19, "%Y-%m-%d %H:%M:%S");
-	snprintf(prefix, len-1, "[%s] INFO [%s +%d] ", now, file, line);
+	snprintf(prefix, len-1, "[%s] %s [%s +%d] ", now, getpromote(level), file, line);
 }
 
 
 void logger_impl(int level, const char* file, int line, const char* fmt, ...) {
 	char prefix[128];
-	get_prefix(prefix, 128, file, line);
+	get_prefix(prefix, 128, file, line, level);
 
 	va_list vars;
 	va_start(vars, fmt);
 	char* buf = (char*)calloc(1, sizeof(char)*4096);
 
-	if (CHECK_FLAG(setting.options, LOG_DAILY_ROTATE) && setting.cnt%20000 == 0) {
+	if (CHECK_FLAG(setting.options, LOG_DAILY_ROTATE) && setting.cnt%setting.preck== 0) {
 		logrotate();
 	}
 
 	while(!cas_try); /* enter critical */
-
 	FILE *f = fopen(setting.filename, "a+");
+	check(f!=NULL);
 	if (f==NULL) {
 		perror(setting.filename);
 		return;
