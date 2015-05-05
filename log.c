@@ -128,6 +128,7 @@ void logger_impl(int level, const char* file, int line, const char* fmt, ...) {
 	if (CHECK_FLAG(setting.options, LOG_CONSOLE)) {
 		fprintf(stderr, "%s", buf);
 	}
+
 	setting.cnt += 1;
 
 	while(!cas_free); /* leave critical */
