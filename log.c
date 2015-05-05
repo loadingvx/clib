@@ -27,7 +27,6 @@ volatile int __lock = CAS_VALID;
 char* LEVEL[] = { "INFO", "WARN", "EROR" };
 
 
-
 void print_and_abort(const char* file, int line, const char* expr) {
 	if(! isatty(fileno(stderr))) {
 		fprintf(stderr, "[ %s ] failed, see <$vim %s +%d>\n", expr, file, line);
@@ -83,6 +82,7 @@ void logger_impl(int level, const char* file, int line, const char* fmt, ...) {
 	va_end(vars);
 
 	fprintf(f, "%s", buf);
+	fflush(f);
 
 	if (CHECK_FLAG(setting.options, LOG_ENABLE_CONSOLE)) {
 		fprintf(stderr, "%s", buf);

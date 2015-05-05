@@ -5,8 +5,9 @@
 #define TIMES 100000
 
 void writelog(){
+	int thread = (int)pthread_self();
 	for(int i = 0; i < TIMES; i++) {
-		info("thread_id=%d\n", (int)pthread_self());
+		info("thread_id=%d\n", thread);
 	}
 }
 
