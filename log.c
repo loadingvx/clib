@@ -13,7 +13,20 @@
 
 #define CHECK_FLAG(options, opt) (options&opt)
 
+
+/* cas lock free */
+#define CAS_VALID  0
+#define CAS_OCCUPY 1
+
+volatile int __lock = CAS_VALID;
+
+#define cas_try  __sync_bool_compare_and_swap(&__lock, CAS_VALID, CAS_OCCUPY)
+#define cas_free __sync_bool_compare_and_swap(&__lock, CAS_OCCUPY, CAS_VALID)
+
+
 char* LEVEL[] = { "INFO", "WARN", "EROR" };
+
+
 
 void print_and_abort(const char* file, int line, const char* expr) {
 	if(! isatty(fileno(stderr))) {
@@ -63,6 +76,8 @@ void logger_impl(int level, const char* file, int line, const char* fmt, ...) {
 	va_start(vars, fmt);
 	char* buf = (char*)calloc(1, sizeof(char)*4096);
 
+	while(!cas_try); /* enter critical */
+
 	int used = sprintf(buf, "%s", prefix);
 	vsprintf(buf+used, fmt, vars);
 	va_end(vars);
@@ -72,6 +87,8 @@ void logger_impl(int level, const char* file, int line, const char* fmt, ...) {
 	if (CHECK_FLAG(setting.options, LOG_ENABLE_CONSOLE)) {
 		fprintf(stderr, "%s", buf);
 	}
+
+	while(!cas_free); /* leave critical */
 
 	free(buf);
 	fclose(f);
