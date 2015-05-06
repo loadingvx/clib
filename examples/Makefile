@@ -1,4 +1,4 @@
-all: testHashMap testLog
+all: testHashMap testLog testLevenshtein
 
 
 testHashMap:
@@ -7,9 +7,13 @@ testHashMap:
 testLog:
 	gcc -DDEBUG log.usage.c ../log.c -o $@ -lpthread -O3
 
+testLevenshtein:
+	gcc -DDEBUG ../log.c ../levenshtein.c levenshtein.usage.c -o $@
+
 clean:
 	rm -rf testHashMap
 	rm -rf testLog
+	rm -rf testLevenshtein
 	rm -rf *.log
 
 

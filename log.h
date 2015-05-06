@@ -22,6 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#ifndef LOG_H
+#define LOG_H
+
+#ifdef __cplusplus
+extern "C"{
+#endif
 
 #include<stdio.h>
 #include<stdarg.h>
@@ -89,6 +95,10 @@ void print_and_abort(const char* file, int line, const char* expr);
 	logger_impl(LOG_FATAL,  __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
 }
 
+#ifdef __cplusplus
+}
+#endif
 
+#endif
 
 

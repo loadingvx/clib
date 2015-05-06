@@ -29,6 +29,9 @@ SOFTWARE.
 #include<stdlib.h>
 #include<unistd.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define CON_COLOR       "\033[34m"
 #define LOCATION_COLOR  "\033[34;1m"
@@ -71,7 +74,7 @@ void log_daily_rotate(int _hour, int _min, int _reqs_precheck) {
 }
 
 
-inline void _now(char* buf, int len, const char* fmt) {
+void _now(char* buf, int len, const char* fmt) {
 	time_t t=time(NULL);
 	strftime (buf, len, fmt, localtime(&t));
 }
@@ -119,7 +122,7 @@ void log_init(const char* _filename, int options) {
 	setting.hour = -1;
 }
 
-inline const char* getpromote(int level) {
+const char* getpromote(int level) {
 	switch(level) {
 	case LOG_INFO:
 		return LEVEL[0];
@@ -135,7 +138,7 @@ inline const char* getpromote(int level) {
 	return NULL; /* should not be here */
 }
 
-inline void get_prefix(char* prefix, int len, const char* file, int line, int level) {
+void get_prefix(char* prefix, int len, const char* file, int line, int level) {
 	memset(prefix, 0x0, len);
 	char now[20];
 	_now(now, 19, "%Y-%m-%d %H:%M:%S");
@@ -181,5 +184,8 @@ void logger_impl(int level, const char* file, int line, const char* fmt, ...) {
 	
 }
 
+#ifdef __cplusplus
+}
+#endif
 
 
