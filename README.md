@@ -1,16 +1,22 @@
 clib
 ====
 
-This library provided:
+This library provides:
 
 * A serialized hash map
-	* write/load a serialized hash-map.
+	* Write/load a serialized hash-map.
+
 * A logger
-	* independent, depends on nothing(not like log4cxx).
-	* supporting daily logrotate(not like google log [glog])
-	* supporting multi-thread write
-	* supporting debug/release compiling(erase all debug functions).
+	* Independent, depends on nothing(not like log4cxx).
+	* Supporting daily logrotate(not like google log [glog])
+	* Supporting multi-thread write
+	* Supporting debug/release compiling(erase all debug functions).
 	* Unix/Posix/Max OS supported.
+
+* A levenshtein distance(edit distance) calculator.
+	* Action costs ( del:insert:replace = 1:1:1 ) was defined to be equal.
+	* Change the costs as you wish.
+
 
 require:
 	GCC > 4.1
