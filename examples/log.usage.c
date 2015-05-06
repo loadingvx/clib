@@ -36,7 +36,8 @@ int main(int argc, const char *argv[])
 	log_daily_rotate(0, atoi(argv[1]), 10000);
 
 	check(1==1);
-	check(!strcmp("f", "f")); /* checking a 'boolean' value */
+	check(!strcmp("f", "f"));     /* checking a 'boolean' value */
+	check(strcmp("f", "f") == 0); /* This is better             */
 
 	test_multi_thread(20, writelog);
 
