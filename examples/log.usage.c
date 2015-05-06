@@ -1,6 +1,7 @@
 #include "../log.h"
 #include <stdlib.h>
 #include <pthread.h>
+#include <string.h>
 
 #define TIMES 100000
 
@@ -33,6 +34,9 @@ int main(int argc, const char *argv[])
 {
 	log_init("./debug.log", LOG_DAILY_ROTATE);
 	log_daily_rotate(0, atoi(argv[1]), 10000);
+
+	check(1==1);
+	check(!strcmp("f", "f")); /* checking a 'boolean' value */
 
 	test_multi_thread(20, writelog);
 
