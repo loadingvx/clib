@@ -43,7 +43,7 @@ extern "C" {
 #define INSERT_COST  1
 #define DELETE_COST  INSERT_COST
 
-int levenshtein(const char* str0, int len0, const char* str1, int len1);
+int levenshtein(const char* str0, const char* str1);
 
 #ifdef __cplusplus
 }

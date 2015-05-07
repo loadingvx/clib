@@ -36,6 +36,8 @@ SOFTWARE.
 #include "log.h"
 #include <string.h>
 #include <stdlib.h>
+#include <wchar.h>
+#include <locale.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,13 +51,19 @@ int tri_min(int x, int y, int z) {
 }
 
 
-int levenshtein(const char* str0, int len0, const char* str1, int len1) {
 
-	check(str0 != NULL && len0 > 0);
-	check(str1 != NULL && len1 > 0);
 
-	int n = len0 + 1; /* row */
-	int m = len1 + 1; /* col */
+int levenshtein(const char* str0, const char* str1) {
+
+	check(str0 != NULL);
+	check(str1 != NULL);
+
+	wchar_t* wstr0 = (wchar_t*)malloc(strlen(str0)+1);
+	wchar_t* wstr1 = (wchar_t*)malloc(strlen(str1)+1);
+
+	setlocale(LC_ALL, "zh_CN.UTF-8");
+	int n = mbstowcs(wstr0, str0, strlen(str0)) + 1;/* row */
+	int m = mbstowcs(wstr1, str1, strlen(str1)) + 1;/* col */
 
 	int *buf = (int *)malloc( n*m );
 
@@ -69,7 +77,7 @@ int levenshtein(const char* str0, int len0, const char* str1, int len1) {
 
 	for (int i = 1; i < n; i++) {
 		for (int j = 1; j < m; j++) {
-			if (str0[i-1] == str1[j-1]) {
+			if (wstr0[i-1] == wstr1[j-1]) {
 				buf[i*m+j] = buf[(i-1)*m+(j-1)];
 			} else {
 				buf[i*m+j] = tri_min(buf[(i-1)*m+(j-1)] + REPLACE_COST,
@@ -82,6 +90,8 @@ int levenshtein(const char* str0, int len0, const char* str1, int len1) {
 	int distance = buf[ n*m -1 ];
 
 	free(buf);
+	free(wstr0);
+	free(wstr1);
 	return distance;
 
 }
