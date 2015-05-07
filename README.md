@@ -16,6 +16,7 @@ This library provides:
 * A levenshtein distance(edit distance) calculator.
 	* Action costs ( del:insert:replace = 1:1:1 ) was defined to be equal.
 	* Change the costs as you wish.
+	* UTF8(CJK) supported and tested.
 
 
 require:
