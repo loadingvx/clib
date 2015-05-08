@@ -18,6 +18,11 @@ This library provides:
 	* Change the costs as you wish.
 	* UTF8(CJK) supported and tested.
 
+* A Boyer\_moore search function.
+	* Boyer\_moore search algorithm was used by GNU grep.
+	* Boyer\_moore is even 3~5 times faster than KMP.
+	* Writen by C-plusplus.
+
 
 require:
 	GCC > 4.1

@@ -1,4 +1,4 @@
-all: testHashMap testLog testLevenshtein
+all: testHashMap testLog testLevenshtein testBoyer_moore
 
 
 testHashMap:
@@ -10,10 +10,14 @@ testLog:
 testLevenshtein:
 	gcc -DDEBUG ../log.c ../levenshtein.c levenshtein.usage.c -o $@
 
+testBoyer_moore:
+	g++ -Wall ../log.c ../boyer_moore.cc boyer_moore.usage.cc -DDEBUG -o $@
+
 clean:
 	rm -rf testHashMap
 	rm -rf testLog
 	rm -rf testLevenshtein
+	rm -rf testBoyer_moore
 	rm -rf *.log
 
 
