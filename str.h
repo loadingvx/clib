@@ -49,7 +49,11 @@ extern "C" {
 
 int split(const std::string& src, const std::string &delimeter, std::vector<std::string> &fields);
 
+int join(const std::string &delim, std::vector<std::string> &words, std::string &res);
+
 int strip(std::string& src, const std::string &chars);
+
+int replace(std::string &src, const std::string &from, const std::string &to);
 
 #ifdef __cplusplus
 }

@@ -67,6 +67,30 @@ int testStringStrip() {
 	return 0;
 }
 
+int testStringJoin() {
+	std::vector<std::string> words;
+
+	words.push_back("");
+	words.push_back("user");
+	words.push_back("local");
+	words.push_back("bin");
+	words.push_back("python");
+
+	std::string python;
+	join("/", words, python);
+	info("%s\n", python.c_str());
+	check(python == "/user/local/bin/python");
+	return 0;
+}
+
+
+int testStringReplace() {
+	std::string path = getenv("PATH");
+	info("Before: %s\n", path.c_str());
+	replace(path, ":", "\n");
+	info("After : %s\n", path.c_str());
+	return 0;
+}
 
 
 int main(int argc, const char *argv[])
@@ -77,6 +101,10 @@ int main(int argc, const char *argv[])
 	testStringSplitNormal();
 
 	testStringStrip();
+
+	testStringJoin();
+
+	testStringReplace();
 
 	return EXIT_SUCCESS;
 }

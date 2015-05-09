@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include "str.h"
 #include "log.h"
+#include <sstream>
 
 #ifdef __cplusplus
 extern "C" {
@@ -79,6 +80,50 @@ int strip(std::string& src, const std::string &chars) {
 
 	return 0;
 }
+
+/* try not to return std::string, becase that cause two times constructions. */
+int join(const std::string &delim, std::vector<std::string> &words, std::string &res){
+
+	std::ostringstream ostr;
+
+	for (std::vector<std::string>::iterator iw = words.begin();
+		iw != words.end(); iw++) {
+		ostr << *iw;
+		if (iw + 1 != words.end()) {
+			ostr << delim;
+		}
+	}
+
+	res = ostr.str();
+
+	return 0;
+}
+
+
+int replace(std::string &src, const std::string &from, const std::string &to) {
+	if (from.empty()) {
+		notice("Tring to replace '' into '%s'\n", to.c_str());
+		return -1;
+	}
+
+	size_t begin = 0;
+	size_t end   = 0;
+	std::ostringstream ostr;
+
+	while(true) {
+		end = src.find(from, begin);
+		if (end == std::string::npos) {
+			ostr << src.substr(begin);
+			break;
+		}
+		ostr << src.substr(begin, end - begin) << to;
+		begin = end + from.size();
+	}
+	
+	src = ostr.str();
+	return 0;
+}
+
 
 
 #ifdef __cplusplus
