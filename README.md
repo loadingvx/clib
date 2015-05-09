@@ -25,6 +25,9 @@ This library provides:
 
 * Some funtions related to "std::string" or "char\*"
 	* <split> split a string into vector by a specifid delimeter
+	* <strip> strip specified chars at both ends.
+	* <join>  python-like join. join strings together with specified delimeter among them.
+	* <replace> replace a substring into specified new string.
 
 require:
 	GCC > 4.1
