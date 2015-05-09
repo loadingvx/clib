@@ -159,6 +159,14 @@ void logger_impl(int level, const char* file, int line, const char* fmt, ...) {
 		logrotate();
 	}
 
+	int used = sprintf(buf, "%s", prefix);
+	vsprintf(buf+used, fmt, vars);
+	va_end(vars);
+
+	if (CHECK_FLAG(setting.options, LOG_CONSOLE)) {
+		fprintf(stderr, "%s", buf);
+	}
+
 	while(!cas_try); /* enter critical */
 	FILE *f = fopen(setting.filename, "a+");
 	check(f!=NULL);
@@ -166,22 +174,13 @@ void logger_impl(int level, const char* file, int line, const char* fmt, ...) {
 		perror(setting.filename);
 		return;
 	}
-	int used = sprintf(buf, "%s", prefix);
-	vsprintf(buf+used, fmt, vars);
-	va_end(vars);
-
 	fprintf(f, "%s", buf);
-
-	if (CHECK_FLAG(setting.options, LOG_CONSOLE)) {
-		fprintf(stderr, "%s", buf);
-	}
+	fclose(f);
 
 	setting.cnt += 1;
-
 	while(!cas_free); /* leave critical */
 
 	free(buf);
-	fclose(f);
 	
 }
 
