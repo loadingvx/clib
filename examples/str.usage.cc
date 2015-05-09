@@ -50,11 +50,24 @@ int testStringSplitNormal() {
 int testStringSplitEmpty() {
 	std::vector<std::string> words;
 	int num = split("", " ", words);
-	check(num == 0);
+	check(num == -1);
 	check(words.size() == 0);
 	
 	return 0;
 }
+
+
+int testStringStrip() {
+	std::string s = "xxymThis is a simple exampleYYY";
+	strip(s, "xymY");
+	check(s == "This is a simple example");
+
+	check(strip(s, "") == -1);
+
+	return 0;
+}
+
+
 
 int main(int argc, const char *argv[])
 {
@@ -62,6 +75,8 @@ int main(int argc, const char *argv[])
 
 	testStringSplitEmpty();
 	testStringSplitNormal();
+
+	testStringStrip();
 
 	return EXIT_SUCCESS;
 }

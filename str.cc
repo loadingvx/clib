@@ -40,7 +40,7 @@ int split(const std::string &src, const std::string &delimeter, std::vector<std:
 
 	if (src.empty()) {
 		notice("Spliting empty string by \"%s\"\n", delimeter.c_str());
-		return 0;
+		return -1;
 	}
 
 	size_t begin = 0;
@@ -58,6 +58,26 @@ int split(const std::string &src, const std::string &delimeter, std::vector<std:
 	fields.push_back(src.substr(begin, end-begin));
 
 	return fields.size();
+}
+
+
+
+
+int strip(std::string& src, const std::string &chars) {
+	if (chars.empty()) {
+		notice("Noting to do.. Tring to strip nothing. chars==\"\" \n");
+		return -1;
+	}
+
+	while(chars.find(src[0]) != std::string::npos) {
+		src.erase(src.begin());
+	}
+
+	while(chars.find(*(src.rbegin())) != std::string::npos) {
+		src.erase(src.end() - 1);
+	}
+
+	return 0;
 }
 
 

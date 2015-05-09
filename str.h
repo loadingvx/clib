@@ -49,6 +49,8 @@ extern "C" {
 
 int split(const std::string& src, const std::string &delimeter, std::vector<std::string> &fields);
 
+int strip(std::string& src, const std::string &chars);
+
 #ifdef __cplusplus
 }
 #endif
