@@ -23,7 +23,7 @@ SOFTWARE.
 */
 
 /*
- This is a implemention of levenshtein distance(edit distance).
+ This is an implemention of levenshtein distance(edit distance).
 
  Define your own cost for actions(replace,insert and delete) and make sure
  the three values fulfill the inequality of triangle.

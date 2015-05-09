@@ -141,7 +141,8 @@ const char* getpromote(int level) {
 void get_prefix(char* prefix, int len, const char* file, int line, int level) {
 	memset(prefix, 0x0, len);
 	char now[20];
-	_now(now, 19, "%Y-%m-%d %H:%M:%S");
+	memset(now, 0, 20);
+	_now(now, 20, "%Y-%m-%d %H:%M:%S");
 	snprintf(prefix, len-1, "[%s] %s [%s +%d] ", now, getpromote(level), file, line);
 }
 

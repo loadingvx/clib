@@ -23,18 +23,25 @@ SOFTWARE.
 */
 
 /*
- This is an implemention of Boyer-Moore searh algorithm.
+ This is an implemention of Trie-tree.
 */
 
-#ifndef BOYER_MOORE_H
-#define BOYER_MOORE_H
-
+#ifndef TRIE_H
+#define TRIE_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-int bmsearch(const char* pattern, const char* src);
+struct Trie {
+	int *base;
+	int *check;
+};
+
+int add_trie(struct Trie *root, char  c);
+int del_trie(struct Trie *root, char* p);
+int sel_trie(struct Trie *root, char* p);
+
 
 #ifdef __cplusplus
 }
@@ -42,6 +49,7 @@ int bmsearch(const char* pattern, const char* src);
 
 
 #endif
+
 
 
 

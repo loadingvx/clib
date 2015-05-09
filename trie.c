@@ -22,26 +22,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/*
- This is an implemention of Boyer-Moore searh algorithm.
-*/
-
-#ifndef BOYER_MOORE_H
-#define BOYER_MOORE_H
+#include "trie.h"
+#include "log.h"
 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-int bmsearch(const char* pattern, const char* src);
+
+int add_trie(struct Trie *root, char  c) {
+	error("NotImplementedError\n");
+	return 0;
+}
+
+int del_trie(struct Trie *root, char* p) {
+	error("NotImplementedError\n");
+}
+
+int sel_trie(struct Trie *root, char* p) {
+	error("NotImplementedError\n");
+}
+
+
 
 #ifdef __cplusplus
 }
 #endif
-
-
-#endif
-
 
 
