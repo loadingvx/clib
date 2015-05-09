@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../log.h"
-#include "boyer_moore.h"
+#include "../boyer_moore.h"
 
 int main(int argc, const char *argv[])
 {
