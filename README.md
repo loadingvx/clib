@@ -23,6 +23,8 @@ This library provides:
 	* Boyer\_moore is even 3~5 times faster than KMP.
 	* Writen by C-plusplus.
 
+* Some funtions related to "std::string" or "char\*"
+	* <split> split a string into vector by a specifid delimeter
 
 require:
 	GCC > 4.1
