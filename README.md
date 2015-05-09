@@ -30,7 +30,7 @@ This library provides:
 	* <replace> replace a substring into specified new string.
 
 require:
-	GCC > 4.1
+	gcc/g++ > 4.1
 
 
 
