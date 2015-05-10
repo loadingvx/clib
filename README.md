@@ -24,10 +24,15 @@ This library provides:
 	* Writen by C-plusplus.
 
 * Some funtions related to "std::string" or "char\*"
-	* <split> split a string into vector by a specifid delimeter
-	* <strip> strip specified chars at both ends.
-	* <join>  python-like join. join strings together with specified delimeter among them.
-	* <replace> replace a substring into specified new string.
+	* split: split a string into vector by a specifid delimeter
+	* strip: strip specified chars at both ends.
+	* join : python-like join. join strings together with specified delimeter among them.
+	* replace: replace a substring into specified new string.
+
+* A bloom filter implementation.
+	* this is a powerful algorithm often used by crawler and caching.
+	* Tools dealing with big data ,like google bigtable, are also using bloom-filter.
+	* A counting mechanism will be added soon to support delete operation.
 
 require:
 	gcc/g++ > 4.1
