@@ -1,4 +1,4 @@
-all: testHashMap testLog testLevenshtein testBoyer_moore testStr
+all: testHashMap testLog testLevenshtein testBoyer_moore testStr testBloomFilter
 
 
 testHashMap:
@@ -16,11 +16,15 @@ testBoyer_moore:
 testStr:
 	g++ -Wall ../log.c ../str.cc str.usage.cc -DDEBUG -o $@
 
+testBloomFilter:
+	g++ -Wall ../log.c ../str.cc ../bloom_filter.c bloomfilter.usage.cc -DDEBUG -o $@
+
 clean:
 	rm -rf testHashMap
 	rm -rf testLog
 	rm -rf testLevenshtein
 	rm -rf testBoyer_moore
+	rm -rf testBloomFilter
 	rm -rf testStr
 	rm -rf *.log
 
