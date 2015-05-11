@@ -33,6 +33,10 @@ This library provides:
 	* this is a powerful algorithm often used by crawler, cache and bigdata tools(hadoop,google bigtable).
 	* A counting mechanism will be added soon to support delete operation.
 
+* An Union\_Find Set(Disjoint Set) algorithm inplementation.
+	* Disjoint sets are widly used by computing strongly connected component in graph.
+	* Disjoint sets are also used to solve LCA problem, and detect rings in graph.
+
 
 require:
 	gcc/g++ > 4.1

@@ -1,4 +1,4 @@
-all: testHashMap testLog testLevenshtein testBoyer_moore testStr testBloomFilter
+all: testHashMap testLog testLevenshtein testBoyer_moore testStr testBloomFilter testDisjoint
 
 
 testHashMap:
@@ -19,6 +19,9 @@ testStr:
 testBloomFilter:
 	g++ -Wall ../log.c ../str.cc ../bloom_filter.c bloomfilter.usage.cc -DDEBUG -o $@
 
+testDisjoint:
+	g++ union_find.usage.cc ../union_find.c ../log.c -DDEBUG -g -o $@
+
 clean:
 	rm -rf testHashMap
 	rm -rf testLog
@@ -26,6 +29,7 @@ clean:
 	rm -rf testBoyer_moore
 	rm -rf testBloomFilter
 	rm -rf testStr
+	rm -rf testDisjoint
 	rm -rf *.log
 
 
