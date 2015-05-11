@@ -171,7 +171,7 @@ struct bloom_filter* bopen(int _n, float p) {
 		return NULL;
 	}
 
-	if (p > 1.0) {
+	if (p > 1.0 || p < 0.0) {
 		fprintf(stderr, "probability must in range [0, 1.0]\n");
 		return NULL;
 	}
