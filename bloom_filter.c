@@ -163,28 +163,41 @@ char mask[] = {
 	0x80
 };
 
-struct bloom_filter* bopen(int _n) {
+
+struct bloom_filter* bopen(int _n, float p) {
 	struct bloom_filter* bfilter = (struct bloom_filter*)malloc(sizeof(struct bloom_filter));
 	if (bfilter == NULL) {
 		perror("Fatal in bopen<bloom filter>:");
 		return NULL;
 	}
 
+	if (p > 1.0) {
+		fprintf(stderr, "probability must in range [0, 1.0]\n");
+		return NULL;
+	}
+
 	bfilter->n = 0;
-	bfilter->m = ceil((_n/8 + 1) * log(2));
-	int k = ceil( (bfilter->m * 1.0 / _n) * log(2) );
+	bfilter->m = ceil(-1 * _n * log(p) / pow(float(log(2)), 2));
+	int k = ceil( bfilter->m / _n * log(2) );
 	bfilter->k = ( k > HASH_NUM ? HASH_NUM : k );
 	bfilter->bits = (char*)malloc(bfilter->m);
+	memset(bfilter->bits, 0x0, bfilter->m);
 	if (bfilter->bits == NULL) {
 		perror("Fatal in bopen<bloom filter>:");
 		return NULL;
 	}
 
-	info("Create bloomfilter ok! params <n:%d, m:%d, k:%d>\n", bfilter->n, bfilter->m, bfilter->k);
+	info("Create bloomfilter ok! params <n:%d, m:%d, k:%d>\n", _n, bfilter->m, bfilter->k);
 	return bfilter;
 }
 
 int bclose(struct bloom_filter* bfilter) {
+
+	if(bfilter == NULL) {
+		notice("tring to free(NULL) !\n");
+		return -1;
+	}
+
 	free(bfilter->bits);
 	bfilter->bits = NULL;
 
@@ -206,15 +219,18 @@ int bset(struct bloom_filter *bfilter, const char* key) {
 			break;
 		}
 
-		int32_t offset = abs((*func)(key)) % bfilter->m;
-		int i = offset / 8 + 1;
+		int32_t offset = abs((*func)(key)) % (bfilter->m * 8);
+		int i = offset / 8;
 		int j = offset % 8;
+
+		info("offset = %d, i = %d, j = %d\n", offset, i, j);
 
 		(bfilter->bits)[i] = ((bfilter->bits)[i]) | mask[j];
 
 		_k++;
-		__sync_fetch_and_add(&(bfilter->n), 1);
 	}
+
+	__sync_fetch_and_add(&(bfilter->n), 1);
 
 	return 0;
 }
@@ -232,8 +248,8 @@ bool bfind(struct bloom_filter *bfilter, const char* key) {
 			break;
 		}
 
-		int32_t offset = abs((*func)(key)) % bfilter->m;
-		int i = offset / 8 + 1;
+		int32_t offset = abs((*func)(key)) % (bfilter->m * 8);
+		int i = offset / 8;
 		int j = offset % 8;
 
 		if( ! (((bfilter->bits)[i]) & mask[j]) ) {
@@ -245,8 +261,17 @@ bool bfind(struct bloom_filter *bfilter, const char* key) {
 	return true;
 }
 
+int bdump_bits(struct bloom_filter* bfilter) {
+	FILE *f = fopen("bloom.dump", "w+");
+	fwrite(bfilter->bits, bfilter->m, 1, f);
+	fclose(f);
+	return 0;
+}
+
 float breliability(struct bloom_filter* bfilter) {
-	return pow(float(1-exp(-(bfilter->k)*(bfilter->n)/(bfilter->m))), bfilter->k );
+	info("current n=%d, m=%d, k=%d\n", bfilter->n, bfilter->m*8, bfilter->k);
+	/* bdump_bits(bfilter); */
+	return 1 - pow(float(1-exp(-(bfilter->k)*(bfilter->n + 0.5)/(bfilter->m -1 ))), bfilter->k );
 }
 
 

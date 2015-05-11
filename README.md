@@ -30,9 +30,9 @@ This library provides:
 	* replace: replace a substring into specified new string.
 
 * A bloom filter implementation.
-	* this is a powerful algorithm often used by crawler and caching.
-	* Tools dealing with big data ,like google bigtable, are also using bloom-filter.
+	* this is a powerful algorithm often used by crawler, cache and bigdata tools(hadoop,google bigtable).
 	* A counting mechanism will be added soon to support delete operation.
+
 
 require:
 	gcc/g++ > 4.1

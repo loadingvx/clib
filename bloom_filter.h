@@ -43,7 +43,7 @@ struct bloom_filter {
  * \param
  *	int _n : number of keys
  */
-struct bloom_filter* bopen(int _n);
+struct bloom_filter* bopen(int _n, float p);
 
 int bclose(struct bloom_filter* bfilter);
 
@@ -52,7 +52,6 @@ int bset(struct bloom_filter *bfilter, const char* key);
 bool bfind(struct bloom_filter *bfilter, const char* key);
 
 float breliability(struct bloom_filter* bfilter);
-
 
 
 

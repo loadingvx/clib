@@ -22,7 +22,7 @@ int testBloomFilter() {
 	split(buffer, " ", words);
 	free(buffer);
 
-	struct bloom_filter* bfilter = bopen(words.size());
+	struct bloom_filter* bfilter = bopen(words.size(), 0.05);
 	check(bfilter != NULL);
 
 	info("OK\n");
@@ -31,7 +31,7 @@ int testBloomFilter() {
 		info("set: %s\n", words[i].c_str());
 	}
 
-	info("BloomFilterErrorRatio: %.3f\n", breliability(bfilter));
+	info("Reliability : %.3f\n", breliability(bfilter));
 	for (int i = 0; i < words.size(); i++) {
 		if ( ! bfind(bfilter, words[i].c_str())) {
 			error("BadBloomFilter: %s\n", words[i].c_str());
@@ -43,11 +43,30 @@ int testBloomFilter() {
 	return 0;
 }
 
+void testbloomN(struct bloom_filter* bfilter, int _n, float zratio) {
+	bfilter = bopen(_n, zratio);
+	bclose(bfilter);
+}
+
+int testBloomFilterBopen() {
+	struct bloom_filter* bfilter = NULL;
+
+	testbloomN(bfilter, 3000,  0.05);
+	testbloomN(bfilter, 3000,  0.1);
+	testbloomN(bfilter, 3000,  0.2);
+	testbloomN(bfilter, 6000,  0.3);
+	testbloomN(bfilter, 12000, 0.4);
+	testbloomN(bfilter, 24000, 0.5);
+
+	return 0;
+}
 
 
 int main(int argc, const char *argv[])
 {
 	log_init("debug.log", LOG_CONSOLE);
+
+	testBloomFilterBopen();
 
 	testBloomFilter();
 
