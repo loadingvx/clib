@@ -37,6 +37,11 @@ This library provides:
 	* Disjoint sets are widly used by computing strongly connected component in graph.
 	* Disjoint sets are also used to solve LCA problem, and detect rings in graph.
 
+* An implementation of Skip-list
+	* Skip-list is a simple but powful data structure, on average, it's speed is likely RB-tree.
+	* Skip-list is used by Redis as the main frame for data storage and retrival.
+	* This is a simple implementation, you can use it to store kinds of key-values(being together in a structure)
+
 
 require:
 	gcc/g++ > 4.1

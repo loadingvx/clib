@@ -1,4 +1,4 @@
-all: testHashMap testLog testLevenshtein testBoyer_moore testStr testBloomFilter testDisjoint
+all: testHashMap testLog testLevenshtein testBoyer_moore testStr testBloomFilter testDisjoint testSk
 
 
 testHashMap:
@@ -22,6 +22,9 @@ testBloomFilter:
 testDisjoint:
 	g++ union_find.usage.cc ../union_find.c ../log.c -DDEBUG -g -o $@
 
+testSk:
+	gcc skiplist.usage.c ../log.c ../skiplist.c -DDEBUG -o $@ -g
+
 clean:
 	rm -rf testHashMap
 	rm -rf testLog
@@ -30,6 +33,7 @@ clean:
 	rm -rf testBloomFilter
 	rm -rf testStr
 	rm -rf testDisjoint
+	rm -rf testSk
 	rm -rf *.log
 
 
