@@ -53,11 +53,11 @@ int testSkipList() {
 	check( strcmp(herry->name, "Herry Smith") == 0 );
 	info("found %s\n", herry->name);
 
-//	sk_delete(sk, (void*)(&key));
-//
-//	herry = sk_find(sk, (void*)(&key));
-//	check(herry == NULL);
-//
+	sk_delete(sk, (void*)(&key));
+
+	herry = sk_find(sk, (void*)(&key));
+	check(herry == NULL);
+
 	sk_destory(sk);
 	return 0;
 }

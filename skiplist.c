@@ -283,6 +283,7 @@ int sk_delete(struct sklist* self, void* key) {
 	int l = self->levels;
 
 	while ( true ) {
+
 		next = ((curr->level)[l]).next;
 
 		if (curr == self->head) {
@@ -291,13 +292,20 @@ int sk_delete(struct sklist* self, void* key) {
 		}
 
 		if (curr == self->tail) {
-			return -1;
+			curr = (self->tail->level)[l].pre;
+			l--;
+			if (l < 0) {
+				return -1; /* end */
+			}
+			continue;
 		}
 
+		check(curr->obj != NULL);
 		int ret = (*(self->cmp))(curr->obj, key);
 
 		if (ret == 0) {
 			sk_inner_delete(self, l, curr);
+			sk_print_table(self);
 			return 0;
 		}
 
@@ -305,11 +313,12 @@ int sk_delete(struct sklist* self, void* key) {
 			curr = next;
 			continue;
 		}
-		
+
 		l--;
 		if (l < 0) {
 			return -1;
 		}
+		curr = (curr->level)[l].pre;
 	}
 
 	return 0; /* should not be here */
