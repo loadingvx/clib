@@ -41,6 +41,7 @@ This library provides:
 	* Skip-list is a simple but powful data structure, on average, it's speed is likely RB-tree.
 	* Skip-list is used by Redis as the main frame for data storage and retrival.
 	* This is a simple implementation, you can use it to store kinds of key-values(being together in a structure)
+	* This Skip-list can be used as a hash-map(key value supported), a dynamic sorter, a data set.
 
 
 require:
