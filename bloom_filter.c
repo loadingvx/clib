@@ -42,7 +42,7 @@ int32_t RSHash(const char* str)     /*Hash by Robert Sedgwicks */
 	int32_t b    = 378551;
 	int32_t a    = 63689;
 	int32_t hash = 0;
-	for(int32_t i = 0; i < strlen(str); i++) {
+	for(int32_t i = 0; i < (int)strlen(str); i++) {
 		hash = hash * a + *(str+i);
 		a = a * b;
 	}
@@ -53,7 +53,7 @@ int32_t RSHash(const char* str)     /*Hash by Robert Sedgwicks */
 int32_t JSHash(const char *str)     /*Hash by Justin Sobel      */
 {
 	int32_t hash = 1315423911;
-	for(int32_t i = 0; i < strlen(str); i++) {
+	for(int32_t i = 0; i < (int)strlen(str); i++) {
 		hash ^= ((hash << 5) + str[i] + (hash >> 2));
 	}
 	return hash;
@@ -67,7 +67,7 @@ int32_t PJWHash(const char* str)     /*Hash by PJWHash           */
 	int32_t HighBits          = (int32_t)(0xFFFFFFFF) << (BitsInUnsignedInt - OneEighth);
 	int32_t hash              = 0;
 	int32_t test              = 0;
-	for(int32_t i = 0; i < strlen(str); i++) {
+	for(int32_t i = 0; i < (int)strlen(str); i++) {
 		hash = (hash << OneEighth) + str[i];
 		if((test = hash & HighBits)  != 0) {
 			hash = (( hash ^ (test >> ThreeQuarters)) & (~HighBits));
@@ -80,7 +80,7 @@ int32_t ELFHash(const char* str)       /* ELFHash                      */
 {
 	int32_t hash = 0;
 	int32_t x    = 0;
-	for(int i = 0; i < strlen(str); i++) {
+	for(int i = 0; i < (int)strlen(str); i++) {
 		hash = (hash << 4) + str[i];
 		if((x = hash & 0xF0000000L) != 0) {
 			hash ^= (x >> 24);
@@ -94,7 +94,7 @@ int32_t BKDRHash(const char* str)  /* Brian Kernighan & Dennis Ritchie */
 {
 	int32_t seed = 131; // 31 131 1313 13131 131313 etc..
 	int32_t hash = 0;
-	for(int i = 0; i < strlen(str); i++) {
+	for(int i = 0; i < (int)strlen(str); i++) {
 		hash = (hash * seed) + str[i];
 	}
 	return hash;
@@ -104,7 +104,7 @@ int32_t BKDRHash(const char* str)  /* Brian Kernighan & Dennis Ritchie */
 int32_t SDBMHash(const char* str)  /* From SDBM library  */
 {
 	int32_t hash = 0;
-	for(int i = 0; i < strlen(str); i++) {
+	for(int i = 0; i < (int)strlen(str); i++) {
 		hash = str[i] + (hash << 6) + (hash << 16) - hash;
 	}
 	return hash;
@@ -113,7 +113,7 @@ int32_t SDBMHash(const char* str)  /* From SDBM library  */
 int32_t DJBHash(const char* str)  /* Daniel J.Bernstein */
 {
 	int32_t hash = 5381;
-	for(int i = 0; i < strlen(str); i++) {
+	for(int i = 0; i < (int)strlen(str); i++) {
 		hash = ((hash << 5) + hash) + str[i];
 	}
 	return hash;
@@ -122,7 +122,7 @@ int32_t DJBHash(const char* str)  /* Daniel J.Bernstein */
 
 int32_t DEKHash(const char* str)  /* Knuth */
 {
-	int len = strlen(str);
+	int len = (int)strlen(str);
 	int32_t hash = len;
 	for(int i = 0; i < len; i++) {
 		hash = ((hash << 5) ^ (hash >> 27)) ^ str[i];
@@ -133,7 +133,7 @@ int32_t DEKHash(const char* str)  /* Knuth */
 int32_t APHash(const char* str)  /* Arash Partow    */
 {
 	int32_t hash = 0xAAAAAAAA;
-	for(int i = 0; i < strlen(str); i++) {
+	for(int i = 0; i < (int)strlen(str); i++) {
 		if ((i & 1) == 0) {
 			hash ^= ((hash << 7) ^ str[i] * (hash >> 3));
 		} else {

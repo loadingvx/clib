@@ -5,21 +5,22 @@
 
 #define TIMES 100000
 
-void writelog(){
-	int thread = (int)pthread_self();
+void* writelog(void*){
+	pthread_t thread = pthread_self();
 	for(int i = 0; i < TIMES; i++) {
 		info("thread_id=%d\n", thread);
 		notice("thread_id=%d\n", thread);
 		warn("thread_id=%d\n", thread);
 	}
+	return NULL;
 }
 
 
-void test_multi_thread(int thread_num, void (*p)(void) ) {
+void test_multi_thread(int thread_num, void* (*p)(void*) ) {
 	pthread_t *id = (pthread_t *)calloc(1, sizeof(pthread_t) * thread_num);
 
 	for(int i = 0; i < thread_num; i++) {
-		int ret = pthread_create(id+i, NULL, (void *)p, NULL);
+		pthread_create(id+i, NULL, p, NULL);
 	}
 
 	for(int i = 0; i < thread_num; i++) {

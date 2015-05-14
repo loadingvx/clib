@@ -75,6 +75,7 @@ void log_daily_rotate(int _hour, int _min, int _reqs_precheck) {
 
 
 void _now(char* buf, int len, const char* fmt) {
+  check(buf != NULL);
 	time_t t=time(NULL);
 	strftime (buf, len, fmt, localtime(&t));
 }
@@ -153,18 +154,19 @@ void logger_impl(int level, const char* file, int line, const char* fmt, ...) {
 
 	va_list vars;
 	va_start(vars, fmt);
-	char* buf = (char*)calloc(1, sizeof(char)*4096);
+	char _buf[2048];
+	memset(_buf,0,2048);
 
 	if (CHECK_FLAG(setting.options, LOG_DAILY_ROTATE) && setting.cnt%setting.preck== 0) {
 		logrotate();
 	}
 
-	int used = sprintf(buf, "%s", prefix);
-	vsprintf(buf+used, fmt, vars);
+	int used = sprintf(_buf, "%s", prefix);
+	vsprintf(_buf+used, fmt, vars);
 	va_end(vars);
 
 	if (CHECK_FLAG(setting.options, LOG_CONSOLE)) {
-		fprintf(stderr, "%s", buf);
+		fprintf(stderr, "%s", _buf);
 	}
 
 	while(!cas_try); /* enter critical */
@@ -174,14 +176,12 @@ void logger_impl(int level, const char* file, int line, const char* fmt, ...) {
 		perror(setting.filename);
 		return;
 	}
-	fprintf(f, "%s", buf);
+	fprintf(f, "%s", _buf);
 	fclose(f);
 
 	setting.cnt += 1;
 	while(!cas_free); /* leave critical */
 
-	free(buf);
-	
 }
 
 #ifdef __cplusplus

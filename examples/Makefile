@@ -1,33 +1,54 @@
+Darwin=1
+debug=1
+allgxx=1
+
+ifeq ($(Darwin), 1)
+	CFLAGS+=-DDarwin
+else
+	CFLAGS+=-DLinux
+endif
+
+ifeq ($(debug), 1)
+	CFLAGS+=-g -Wall -DDEBUG
+endif
+
+ifeq ($(allgxx), 1)
+	CC=g++
+else
+	CC=gcc
+endif
+
+
 all: testHashMap testLog testLevenshtein testBoyer_moore testStr testBloomFilter testDisjoint testSk
 
 
 testHashMap:
-	g++ -Wall -O3 static_hash.usage.cc -o $@
+	$(CC) $(CFLAGS) -O3 static_hash.usage.cc -o $@
 
 testLog:
-	gcc -DDEBUG log.usage.c ../log.c -o $@ -lpthread -O3
+	$(CC) $(CFLAGS) log.usage.c ../log.c -o $@ -lpthread -O3
 
 testLevenshtein:
-	gcc -DDEBUG ../log.c ../levenshtein.c levenshtein.usage.c -o $@
+	$(CC) $(CFLAGS) ../log.c ../levenshtein.c levenshtein.usage.c -o $@
 
 testBoyer_moore:
-	g++ -Wall ../log.c ../boyer_moore.cc boyer_moore.usage.cc -DDEBUG -o $@
+	$(CC) $(CFLAGS) ../log.c ../boyer_moore.cc boyer_moore.usage.cc -o $@
 
 testStr:
-	g++ -Wall ../log.c ../str.cc str.usage.cc -DDEBUG -o $@
+	$(CC) $(CFLAGS) ../log.c ../str.cc str.usage.cc -o $@
 
 testBloomFilter:
-	g++ -Wall ../log.c ../str.cc ../bloom_filter.c bloomfilter.usage.cc -DDEBUG -o $@
+	$(CC) $(CFLAGS) ../log.c ../str.cc ../bloom_filter.c bloomfilter.usage.cc -o $@
 
 testDisjoint:
-	g++ union_find.usage.cc ../union_find.c ../log.c -DDEBUG -g -o $@
+	$(CC) $(CFLAGS) union_find.usage.cc ../union_find.c ../log.c -g -o $@
 
 testSk:
-	gcc skiplist.usage.c ../log.c ../skiplist.c -DDEBUG -o $@ -g
+	$(CC) $(CFLAGS) skiplist.usage.c ../log.c ../skiplist.c -o $@
 
 clean:
-	rm -rf testHashMap
 	rm -rf testLog
+	rm -rf testHashMap
 	rm -rf testLevenshtein
 	rm -rf testBoyer_moore
 	rm -rf testBloomFilter
@@ -35,6 +56,8 @@ clean:
 	rm -rf testDisjoint
 	rm -rf testSk
 	rm -rf *.log
+	rm -rf *.dSYM
+
 
 
 

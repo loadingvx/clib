@@ -7,12 +7,12 @@
 #include "../skiplist.h"
 
 struct item {
-	int   num;
-	char name[20];
+	int  num;
+	int  age;
 };
 
 int cmp (void* item, void *key) {
-	struct item* it = item;
+	struct item* it = (struct item*)item;
 	int k = *((int*)key);
 
 	if (it->num == k) {
@@ -39,23 +39,27 @@ int testSkipList() {
 	struct sklist* sk = sk_create(cmp, itemsize, getKey);
 	check(sk != NULL);
 
-	struct item i = {0xB, "John  White"};
-	struct item j = {0xE, "John  Smith"};
-	struct item k = {0x8,  "Herry Smith"};
+	struct item i = {0xa, 0xAB};
+	struct item j = {0xe, 0xAC};
+	struct item k = {0x8, 0xAD};
+	struct item m = {0xb, 0xAE};
+	struct item n = {0x9, 0xAF};
 
-	sk_insert(sk, (void*)(&i));
-	sk_insert(sk, (void*)(&j));
-	sk_insert(sk, (void*)(&k));
+	sk_insert(sk, (void*)(&i)); //a
+	sk_insert(sk, (void*)(&k)); //8
+	sk_insert(sk, (void*)(&j)); //e
+	sk_insert(sk, (void*)(&m)); //b
+	sk_insert(sk, (void*)(&n)); //9
 
 	int key = 8;
-	struct item* herry = sk_find(sk, (void*)(&key));
+	struct item* herry = (struct item*)sk_find(sk, (void*)(&key));
 	check( herry != NULL );
-	check( strcmp(herry->name, "Herry Smith") == 0 );
-	info("found %s\n", herry->name);
+	check( herry->age == 0xAD );
+	info("found 0x%X\n", herry->age);
 
 	sk_delete(sk, (void*)(&key));
 
-	herry = sk_find(sk, (void*)(&key));
+	herry = (struct item*)sk_find(sk, (void*)(&key));
 	check(herry == NULL);
 
 	sk_destory(sk);
