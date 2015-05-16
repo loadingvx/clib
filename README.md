@@ -43,6 +43,10 @@ This library provides:
 	* This is a simple implementation, you can use it to store kinds of key-values(being together in a structure)
 	* This Skip-list can be used as a hash-map(key value supported), a dynamic sorter, a data set.
 
+* An implementation of Splay\_Tree
+	* Splay tree is a self-adjusting tree. it can optimize itself while working.
+	* Splay tree can be used as a cache naturally, because of its self-adjust feature. The Elements visited recently are all at the top of the tree.
+	* Comparing with RB-tree, splay tree saves more space, because it stores no color or other msg of balance.
 
 require:
 	gcc/g++ > 4.1

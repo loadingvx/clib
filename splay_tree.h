@@ -22,37 +22,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef _H
-#define _H
+#ifndef SPLAY_TREE_H
+#define SPLAY_TREE_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-struct sklevel {
-	struct sknode* next;
-	struct sknode* pre;
+struct splay_node {
+	void * value;
+	struct splay_node* f;
+	struct splay_node* l;
+	struct splay_node* r;
 };
 
-struct sknode {
-	void* obj;
-	struct sklevel *level;
-};
-
-struct sklist {
-	struct sknode* head;
-	struct sknode* tail;
-	int levels;
-	int(*cmp)(void* obj, void *key);
+struct splay {
+	int count;
+	struct splay_node *root;
+	int (*cmp)(const void*, const void*);
 	int (*objsize)();
-	void* (*getKey)(void*);
+	const void* (*getKey)(const void*);
 };
 
-struct sklist* sk_create(int(*cmp)(void* obj, void *key), int (*objsize)(), void* (*getKey)(void*));
-int sk_insert(struct sklist* self, void* obj);
-int sk_delete(struct sklist* self, void* key);
-const void* sk_find(struct sklist* self, void* key);
-int sk_destory(struct sklist* self);
+struct splay* sp_create(int (*cmp)(const void*, const void*), int (*objsize)(), const void* (*getKey)(const void*) );
+const void* sp_access(struct splay* self, const void* key);
+const void* sp_find(struct splay* self, const void* key);
+int sp_delete(struct splay* self, const void* key);
+int sp_insert(struct splay* self, const void* obj);
+int sp_destory(struct splay* self);
+
 
 #ifdef __cplusplus
 }

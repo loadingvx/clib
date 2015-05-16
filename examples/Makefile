@@ -19,7 +19,7 @@ else
 endif
 
 
-all: testHashMap testLog testLevenshtein testBoyer_moore testStr testBloomFilter testDisjoint testSk
+all: testHashMap testLog testLevenshtein testBoyer_moore testStr testBloomFilter testDisjoint testSk testSplayTree
 
 
 testHashMap:
@@ -46,6 +46,9 @@ testDisjoint:
 testSk:
 	$(CC) $(CFLAGS) skiplist.usage.c ../log.c ../skiplist.c -o $@
 
+testSplayTree:
+	$(CC) $(CFLAGS) splaytree.usage.c ../log.c ../splay_tree.c -o $@
+
 clean:
 	rm -rf testLog
 	rm -rf testHashMap
@@ -55,6 +58,7 @@ clean:
 	rm -rf testStr
 	rm -rf testDisjoint
 	rm -rf testSk
+	rm -rf testSplayTree
 	rm -rf *.log
 	rm -rf *.dSYM
 

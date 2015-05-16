@@ -325,7 +325,7 @@ int sk_delete(struct sklist* self, void* key) {
 
 }
 
-void* sk_find(struct sklist* self, void* key) {
+const void* sk_find(struct sklist* self, void* key) {
 
 	if (self == NULL) {
 		notice("Searching an empty skip_list\n");

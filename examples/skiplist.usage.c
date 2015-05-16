@@ -19,10 +19,9 @@ int cmp (void* item, void *key) {
 		return 0;
 	}
 
-	if (it->num> k) {
+	if (it->num < k) {
 		return 1;
 	}
-
 
 	return -1;
 }
@@ -52,14 +51,14 @@ int testSkipList() {
 	sk_insert(sk, (void*)(&n)); //9
 
 	int key = 8;
-	struct item* herry = (struct item*)sk_find(sk, (void*)(&key));
+	const struct item* herry = (const struct item*)sk_find(sk, (void*)(&key));
 	check( herry != NULL );
 	check( herry->age == 0xAD );
 	info("found 0x%X\n", herry->age);
 
 	sk_delete(sk, (void*)(&key));
 
-	herry = (struct item*)sk_find(sk, (void*)(&key));
+	herry = (const struct item*)sk_find(sk, (void*)(&key));
 	check(herry == NULL);
 
 	sk_destory(sk);
