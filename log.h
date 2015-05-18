@@ -49,6 +49,7 @@ void log_daily_rotate(int _hour, int _min, int _reqs_precheck);
 void logger_impl(int level, const char* file, int line, const char* fmt, ...);
 
 
+#define DEBUG
 #ifdef DEBUG
 #define info(fmt, ...)   {  \
 	logger_impl(LOG_INFO,  __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
