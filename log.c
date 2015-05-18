@@ -71,12 +71,12 @@ void log_daily_rotate(int _hour, int _min, int _reqs_precheck) {
 	setting.hour  = _hour;
 	setting.min   = _min;
 	setting.preck = _reqs_precheck;
-    setting.cnt = 0;
+	setting.cnt = 0;
 }
 
 
 void _now(char* buf, int len, const char* fmt) {
-  check(buf != NULL);
+	check(buf != NULL);
 	time_t t=time(NULL);
 	strftime (buf, len, fmt, localtime(&t));
 }
@@ -95,7 +95,7 @@ int logrotate() {
 		if(rename(setting.filename, newName)) {
 			printf("checking[%d]\n", t->tm_min);
 			perror(newName);
-            while(!cas_free);
+			while(!cas_free);
 			return -1;
 		}
 		free(newName);
@@ -160,7 +160,7 @@ void logger_impl(int level, const char* file, int line, const char* fmt, ...) {
 	memset(_buf,0,2048);
 
 	if (CHECK_FLAG(setting.options, LOG_DAILY_ROTATE) &&
-            setting.cnt != 0 && setting.cnt%setting.preck== 0) {
+		setting.cnt != 0 && setting.cnt%setting.preck== 0) {
 		logrotate();
 	}
 
