@@ -49,7 +49,6 @@ void log_daily_rotate(int _hour, int _min, int _reqs_precheck);
 void logger_impl(int level, const char* file, int line, const char* fmt, ...);
 
 
-#define DEBUG
 #ifdef DEBUG
 #define info(fmt, ...)   {  \
 	logger_impl(LOG_INFO,  __FILE__, __LINE__, fmt, ##__VA_ARGS__); \
@@ -78,6 +77,7 @@ void print_and_abort(const char* file, int line, const char* expr);
 #define check(condition) require(condition)
 
 #else
+
 /* erase all debug/check/info/notice/warn from release */
 #define info(...)
 #define notice(...)

@@ -78,7 +78,7 @@ void log_daily_rotate(int _hour, int _min, int _reqs_precheck) {
 void _now(char* buf, int len, const char* fmt) {
 	check(buf != NULL);
 	time_t t=time(NULL);
-	strftime (buf, len, fmt, localtime(&t));
+	strftime(buf, len, fmt, localtime(&t));
 }
 
 int logrotate() {
