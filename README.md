@@ -3,8 +3,11 @@ clib
 
 This library provides:
 
-* A serialized hash map
-	* Write/load a serialized hash-map.
+* Some funtions related to "std::string" or "char\*"
+	* split: split a string into vector by a specifid delimeter
+	* strip: strip specified chars at both ends.
+	* join : python-like join. join strings together with specified delimeter among them.
+	* replace: replace a substring into specified new string.
 
 * A logger
 	* Independent, depends on nothing(not like log4cxx).
@@ -12,6 +15,14 @@ This library provides:
 	* Supporting multi-thread write
 	* Supporting debug/release compiling(erase all debug functions).
 	* Unix/Posix/Max OS supported.
+
+* A config parser (cfg)
+	* support (string/boolean/int)
+	* automatic file-change dectection.
+	* support var/env for config like "key=${var}/other/${HOME}"
+
+* A serialized hash map
+	* Write/load a serialized hash-map.
 
 * A levenshtein distance(edit distance) calculator.
 	* Action costs ( del:insert:replace = 1:1:1 ) was defined to be equal.
@@ -23,11 +34,6 @@ This library provides:
 	* Boyer\_moore is even 3~5 times faster than KMP.
 	* Writen by C-plusplus.
 
-* Some funtions related to "std::string" or "char\*"
-	* split: split a string into vector by a specifid delimeter
-	* strip: strip specified chars at both ends.
-	* join : python-like join. join strings together with specified delimeter among them.
-	* replace: replace a substring into specified new string.
 
 * A bloom filter implementation.
 	* this is a powerful algorithm often used by crawler, cache and bigdata tools(hadoop,google bigtable).

@@ -34,10 +34,13 @@ class Config {
 	private:
 		char* fname;
 		long modify_time;
-		std::map<std::string, std::string>cache;
+		std::map<std::string, std::string> cache;
+		std::map<std::string, std::string> env;
 
 		std::string find(const char* section, const char* key);
 		std::string dot (const char* section, const char* key);
+
+		bool        expand();
 		bool        file_changed();
 		bool        update_cache();
 	public:

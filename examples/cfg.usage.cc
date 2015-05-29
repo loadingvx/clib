@@ -34,14 +34,16 @@ int main(int argc, const char *argv[])
 
 	Config cfg("./test.cfg");
 
+	std::string home = getenv("HOME");
+
 	printf("v = %s\n",cfg.string(NULL, "sample_path").c_str() );
-	check(cfg.string(NULL,      "sample_path") == "/home/liangchengming/test_dir/global/");
+	check(cfg.string(NULL,      "sample_path") == home+"/global/");
 
 	printf("v = %s\n",cfg.string("default", "sample_path").c_str() );
-	check(cfg.string("default", "sample_path") == "/home/liangchengming/test_dir/default/");
+	check(cfg.string("default", "sample_path") == home+"/default/");
 
 	printf("v = %s\n",cfg.string("data", "sample_path").c_str() );
-	check(cfg.string("data",    "sample_path") == "/home/liangchengming/test_dir/data/");
+	check(cfg.string("data",    "sample_path") == home+"/data/");
 
 	check(cfg.boolean("default", "cache") == false);
 
