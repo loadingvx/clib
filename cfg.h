@@ -37,6 +37,7 @@ class Config {
 		std::map<std::string, std::string>cache;
 
 		std::string find(const char* section, const char* key);
+		std::string dot (const char* section, const char* key);
 		bool        file_changed();
 		bool        update_cache();
 	public:

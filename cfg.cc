@@ -33,12 +33,14 @@ SOFTWARE.
 #include <stdio.h>
 #include <errno.h>
 
-Config::Config(std::string config_file) {
-	this->fname = strdup(config_file.c_str());
-	this->modify_time = 0;
-	this->cache.clear();
-	this->update_cache();
+std::string Config::dot(const char* section, const char* key) {
+	std::string s = ".";
+	if (section != NULL) {
+		s = std::string(section) + ".";
+	}
+	return s+key;
 }
+
 
 bool Config::update_cache() {
 	if (! this->file_changed()) {
@@ -93,15 +95,20 @@ bool Config::update_cache() {
 		check(fields.size() == 2);
 		std::string tail = fields[1];
 		strip(tail, " \t\n\r");
-		cache.insert(std::pair<std::string, std::string>(head+current_section, tail));
-		check(cache.find(head+current_section) != cache.end());
-		info("cache <%s, %s>\n", (head+current_section).c_str(), tail.c_str());
+		this->cache.insert(std::pair<std::string, std::string>(this->dot(current_section.c_str(), head.c_str()), tail));
+		info("<%s, %s>\n", this->dot(current_section.c_str(), head.c_str()).c_str(), tail.c_str());
 	}
 	free(buf);
 	fclose(f);
 	return true;
 }
 
+Config::Config(std::string config_file) {
+	this->fname = strdup(config_file.c_str());
+	this->modify_time = 0;
+	this->cache.clear();
+	this->update_cache();
+}
 
 Config::~Config() {
 	check(this->fname);
@@ -135,12 +142,8 @@ bool Config::file_changed() {
 
 std::string Config::find(const char* section, const char* key) {
 	this->update_cache();
-	std::string s = "";
-	if (section != NULL) {
-		s = section;
-	}
-	std::string k = key+s;
-	std::map<std::string, std::string>::iterator icache = this->cache.find(k);
+	info("k=%s\n", this->dot(section, key).c_str());
+	std::map<std::string, std::string>::iterator icache = this->cache.find(this->dot(section, key));
 	if (icache != this->cache.end()) {
 		return icache->second;
 	}
