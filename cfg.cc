@@ -36,31 +36,15 @@ SOFTWARE.
 Config::Config(std::string config_file) {
 	this->fname = strdup(config_file.c_str());
 	this->modify_time = 0;
+	this->cache.clear();
+	this->update_cache();
 }
 
-Config::~Config() {
-	check(this->fname);
-	free(this->fname);
-	this->fname = NULL;
-}
-
-bool Config::file_changed() {
-	struct stat status;
-	check(this->fname);
-	int st = stat(this->fname, &status);
-	if (st == -1) {
-		perror(this->fname);
-		return false;
-	}
-	if (this->modify_time != 0 && status.st_mtime > this->modify_time) {
-		this->modify_time = status.st_mtime;
+bool Config::update_cache() {
+	if (! this->file_changed()) {
 		return true;
 	}
-	return false;
-}
 
-
-std::string Config::option(const char* section, const char* key) {
 	check(this->fname);
 	if (access(this->fname, R_OK) != 0) {
 		info("accessing(read) %s failure\n", this->fname);
@@ -73,11 +57,8 @@ std::string Config::option(const char* section, const char* key) {
 	}
 
 	char* buf = (char*) malloc(sizeof(char)*1024);
-	int section_status = 0;
+	std::string current_section = "";
 	std::vector<std::string> fields;
-	if (section == NULL || strlen(section) == 0) {
-		section_status = -1;                 /* ignore section */
-	}
 
 	ssize_t bytes_cnt = 0;
 	size_t size;
@@ -95,93 +76,94 @@ std::string Config::option(const char* section, const char* key) {
 		if (n != std::string::npos) {
 			line = line.substr(0, n);    /* erase comment tail */
 			strip(line, " \t\n\r");
+			if (line.size() == 0) {
+				continue;
+			}
 		}
 
 		split(line, "=", fields);
 		std::string head = fields[0];
 		strip(head, " \t\n\r");
-		if (section_status != -1) {
-			if(head[0] == '[' && head[head.size() -1 ] == ']') {
-				if (section_status == 1) {
-					free(buf);
-					fclose(f);
-					return "";        /* end of section    */
-				}
-				strip(head, "][ \t");
-				if (strcmp(head.c_str(), section) == 0 && section_status == 0) {
-					section_status = 1;
-					continue;     /* begin of section   */
-				}
-			}
-			if(section_status == 1 && strcmp(head.c_str(), key) == 0) {
-				free(buf);
-				fclose(f);
-				return line;
-			}
-		} else {
-			if(strcmp(head.c_str(), key) == 0) {
-				free(buf);
-				fclose(f);
-				return line;
-			}
+		if(head[0] == '[' && head[head.size() -1 ] == ']') {
+			strip(head, "][ \t");
+			check(head.size() > 0);
+			current_section = head;
+			continue;     /* begin of new section   */
 		}
+		check(fields.size() == 2);
+		std::string tail = fields[1];
+		strip(tail, " \t\n\r");
+		cache.insert(std::pair<std::string, std::string>(head+current_section, tail));
+		check(cache.find(head+current_section) != cache.end());
+		info("cache <%s, %s>\n", (head+current_section).c_str(), tail.c_str());
 	}
 	free(buf);
 	fclose(f);
-	return "";
-}
-
-
-bool Config::kv_pair(std::string &line, std::vector<std::string>& fields) {
-	split(line, "=", fields);
-	check(fields.size() == 2);
-	if (fields.size() != 2) {
-		info("BadValue Config: %s\n", line.c_str());
-		return false;
-	}
 	return true;
 }
 
-std::string Config::get_str(const char* section, const char* key) {
-	std::vector<std::string> fields;
-	std::string line = this->option(section, key);
-	if (line.size() == 0) {
-		return "";
-	}
-	if (!kv_pair(line, fields)) {
-		return "";
-	}
-	std::string value = fields[1];
-	strip(value, "\t\r\n ");
-	return value;
+
+Config::~Config() {
+	check(this->fname);
+	free(this->fname);
+	this->fname = NULL;
 }
 
-int Config::get_num(const char* section, const char* key) {
-	std::vector<std::string> fields;
-	std::string line = this->option(section, key);
-	if (line.size() == 0) {
+bool Config::file_changed() {
+	struct stat status;
+	check(this->fname);
+
+	int st = stat(this->fname, &status);
+	if (st == -1) {
+		perror(this->fname);
+		return false;
+	}
+
+	if (this->modify_time == 0) {
+		this->modify_time = status.st_mtime;
+		return true;
+	}
+
+	if (this->modify_time != 0 && status.st_mtime > this->modify_time) {
+		this->modify_time = status.st_mtime;
+		info("Detected file changes!\n");
+		return true;
+	}
+
+	return false;
+}
+
+std::string Config::find(const char* section, const char* key) {
+	this->update_cache();
+	std::string s = "";
+	if (section != NULL) {
+		s = section;
+	}
+	std::string k = key+s;
+	std::map<std::string, std::string>::iterator icache = this->cache.find(k);
+	if (icache != this->cache.end()) {
+		return icache->second;
+	}
+	return "";
+}
+
+std::string Config::string(const char* section, const char* key) {
+	return this->find(section, key);
+}
+
+int Config::number(const char* section, const char* key) {
+	std::string value = this->find(section, key);
+	if (value == "") {
 		return INT_MAX;
 	}
-	if (!kv_pair(line, fields)) {
-		return INT_MAX;
-	}
-	std::string value = fields[1];
-	strip(value, "\t\r\n ");
 	return atoi(value.c_str());
 }
 
-bool Config::get_bool(const char* section, const char* key) {
-	std::vector<std::string> fields;
-	std::string line = this->option(section, key);
-	if (line.size() == 0) {
+bool Config::boolean(const char* section, const char* key) {
+	std::string value = this->find(section, key);
+	if (value.size() == 0) {
 		return false;
 	}
-
-	if (!kv_pair(line, fields)) {
-		return false;
-	}
-	std::string value = fields[1];
-	strip(value, "\t\r\n ");
 	if (value == "true") {
 		return true;
 	}

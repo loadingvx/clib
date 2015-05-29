@@ -27,18 +27,22 @@ SOFTWARE.
 
 #include <string>
 #include <vector>
+#include <map>
+
 
 class Config {
 	private:
 		char* fname;
 		long modify_time;
-		std::string option(const char* section, const char* key);
-		bool kv_pair(std::string &line, std::vector<std::string>&vector);
+		std::map<std::string, std::string>cache;
+
+		std::string find(const char* section, const char* key);
+		bool        file_changed();
+		bool        update_cache();
 	public:
-		bool file_changed();
-		std::string get_str(const char* section, const char* key);
-		int get_num(const char* section, const char* key);
-		bool get_bool(const char* section, const char* key);
+		std::string string (const char* section, const char* key);
+		int         number (const char* section, const char* key);
+		bool        boolean(const char* section, const char* key);
 	public:
 		Config(std::string config_file);
 		~Config();

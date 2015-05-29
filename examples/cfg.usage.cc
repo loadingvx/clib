@@ -33,10 +33,17 @@ int main(int argc, const char *argv[])
 	log_init("./debug.log", LOG_CONSOLE);
 
 	Config cfg("./test.cfg");
-	check(cfg.get_str(NULL, "sample_path") == "/home/liangchengming/test_dir/");
-	check(cfg.get_str("data", "sample_path") == "/home/liangchengming/test_dir/");
-	check(cfg.get_bool(NULL, "cache") == false);
-	check(cfg.get_bool("default", "cache") == false);
+
+	printf("v = %s\n",cfg.string(NULL, "sample_path").c_str() );
+	check(cfg.string(NULL,      "sample_path") == "/home/liangchengming/test_dir/global/");
+
+	printf("v = %s\n",cfg.string("default", "sample_path").c_str() );
+	check(cfg.string("default", "sample_path") == "/home/liangchengming/test_dir/default/");
+
+	printf("v = %s\n",cfg.string("data", "sample_path").c_str() );
+	check(cfg.string("data",    "sample_path") == "/home/liangchengming/test_dir/data/");
+
+	check(cfg.boolean("default", "cache") == false);
 
 	return EXIT_SUCCESS;
 }

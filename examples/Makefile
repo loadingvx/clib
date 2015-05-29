@@ -19,7 +19,7 @@ else
 endif
 
 
-all: testHashMap testLog testLevenshtein testBoyer_moore testStr testBloomFilter testDisjoint testSk testSplayTree testCfg
+all: testCfg testHashMap testLog testLevenshtein testBoyer_moore testStr testBloomFilter testDisjoint testSk testSplayTree
 
 
 testHashMap:
