@@ -37,8 +37,8 @@ SOFTWARE.
 extern char **environ;
 
 std::string Config::dot(const char* section, const char* key) {
-	std::string s = ".";
-	if (section != NULL) {
+	std::string s = "";
+	if (section != NULL && strlen(section) > 0) {
 		s = std::string(section) + ".";
 	}
 	return s+key;
@@ -72,7 +72,6 @@ bool Config::expand() {
 		std::string::size_type end = this->cache[it->first].find("}");
 		check(end != std::string::npos);
 		v = this->cache[it->first].substr(it->second, end - it->second);
-
 		check(this->cache.find(v) != this->cache.end() || this->env.find(v) != this->env.end());
 		check(vars.find(v) == vars.end()); /* fatal: variable defination loop */
 
