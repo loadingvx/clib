@@ -54,6 +54,10 @@ This library provides:
 	* Splay tree can be used as a cache naturally, because of its self-adjust feature. The Elements visited recently are all at the top of the tree.
 	* Comparing with RB-tree, splay tree saves more space, because it stores no color or other msg of balance.
 
+* An implementation of base64(decode/encode)
+    * Base64 is wildly used by MIME,urlencoding.
+    * encoder is done, decoder comming soon.
+
 require:
 	gcc/g++ > 4.1
 

@@ -19,8 +19,10 @@ else
 endif
 
 
-all: testCfg testHashMap testLog testLevenshtein testBoyer_moore testStr testBloomFilter testDisjoint testSk testSplayTree
+all:testB64 testCfg testHashMap testLog testLevenshtein testBoyer_moore testStr testBloomFilter testDisjoint testSk testSplayTree
 
+testB64:
+	$(CC) $(CFLAGS) -O3 b64.usage.c ../log.c ../b64.c -o $@
 
 testHashMap:
 	$(CC) $(CFLAGS) -O3 static_hash.usage.cc -o $@
@@ -53,6 +55,7 @@ testCfg:
 	$(CC) $(CFLAGS) cfg.usage.cc ../log.c ../str.cc ../cfg.cc -o $@
 
 clean:
+	rm -rf testB64
 	rm -rf testLog
 	rm -rf testHashMap
 	rm -rf testLevenshtein
