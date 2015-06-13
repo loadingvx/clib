@@ -44,21 +44,30 @@ SOFTWARE.
  */
 
 
-void testB64(const char* raw, const char* encoded) {
-	char* b64 = b64encode(raw);
-	check(strcmp(b64, encoded)==0);
-	free(b64);
+void testB64Encode(const char* raw, const char* encoded) {
+	char* b64e = b64encode(raw);
+	check(strcmp(b64e, encoded)==0);
+	free(b64e);
 }
 
+void testB64Decode(const char* raw, const char* decoded) {
+	char* b64d = b64decode(raw);
+	check(strcmp(b64d, decoded)==0);
+	free(b64d);
+}
 
 int main(int argc, const char *argv[])
 {
 
 	log_init("./debug.log", LOG_CONSOLE);
 
-	testB64("pleasure", "cGxlYXN1cmU=");
-	testB64("pleasur",  "cGxlYXN1cg==");
-	testB64("pleasu",   "cGxlYXN1");
+	testB64Encode("pleasure", "cGxlYXN1cmU=");
+	testB64Encode("pleasur",  "cGxlYXN1cg==");
+	testB64Encode("pleasu",   "cGxlYXN1");
+
+	testB64Decode("cGxlYXN1cmU=", "pleasure");
+	testB64Decode("cGxlYXN1cg==", "pleasur");
+	testB64Decode(    "cGxlYXN1", "pleasu");
 
 	return EXIT_SUCCESS;
 }

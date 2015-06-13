@@ -56,7 +56,7 @@ This library provides:
 
 * An implementation of base64(decode/encode)
     * Base64 is wildly used by MIME,urlencoding.
-    * encoder is done, decoder comming soon.
+    * Both 'b64encode' and 'b64decode' return a char\* pointer, *free it yourself*.
 
 require:
 	gcc/g++ > 4.1
