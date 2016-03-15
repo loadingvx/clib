@@ -46,6 +46,22 @@ int bad_char_offset(const std::string &pattern, const char bad_char){
 }
 
 size_t last_longest_suffix(const std::string &pattern,const std::string &good) {
+	/* if you are matching one pattern from all kinds of different sources,
+	 * consider making a cache of position for all good-suffix:
+	 *
+	 * For example
+	 *    if pattern is "abcde"
+	 *    the cache will be
+	 *    {
+	 *        "abcdc":0,
+	 *         "bcdc":1,
+	 *          "cdc":2,
+	 *           "dc":3,
+	 *            "c":4
+	 *    }
+	 *  The position good-suffix locates in pattern is indepent of src, so you can speed up by
+	 *  preprocessing pattern into a good-suffix cache.
+	 */
 	return pattern.substr(0, pattern.size() - 1).rfind(good);
 }
 
