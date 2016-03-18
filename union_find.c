@@ -84,6 +84,8 @@ int  ufs_find(struct UFS* uf, int p) {
 
 	while ((uf->sym)[p] != p) {
 		p = (uf->sym)[p];
+		/* change (uf->sym)[p] to his grandparent, speed up find function */
+		(uf->sym)[p] = (uf->sym)[(uf->sym)[p]];
 	}
 
 	return p;
