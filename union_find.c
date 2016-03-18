@@ -103,6 +103,9 @@ int  ufs_union(struct UFS* uf, int p, int q) {
 	}
 
 	/* _lock */
+	/* weight means the number of current set, by balancing weights, to speed up
+	 * find function
+	 */
 	if ((uf->weights)[symp] < (uf->weights)[symq]) {
 		(uf->sym)[symp] = symq;
 		(uf->weights)[symq] = ((uf->weights)[symp] +1 > (uf->weights)[symq] ? (uf->weights)[symp] +1: (uf->weights)[symq]);
